@@ -17,6 +17,7 @@ namespace SnakeGame
         public Form1()
         {
             InitializeComponent();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -57,16 +58,73 @@ namespace SnakeGame
         private void downBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveDown();
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                {
+                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    {
+                        MessageBox.Show("LOSER!!!");
+                        this.Hide();
+                    }
+                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    {
+                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        {
+                            MessageBox.Show("LOSER!!!");
+                            this.Hide();
+                        }
+                    }
+                }
+            }
         }
 
         private void leftBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveLeft();
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                {
+                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    {
+                        MessageBox.Show("LOSER!!!");
+                        this.Hide();
+                    }
+                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    {
+                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        {
+                            MessageBox.Show("LOSER!!!");
+                            this.Hide();
+                        }
+                    }
+                }
+            }
         }
 
         private void rightBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveRight();
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                {
+                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    {
+                        MessageBox.Show("LOSER!!!");
+                        this.Hide();
+                    }
+                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    {
+                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        {
+                            MessageBox.Show("LOSER!!!");
+                            this.Hide();
+                        }
+                    }
+                }
+            }
         }
     }
     public class Snake
