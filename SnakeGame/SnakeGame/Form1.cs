@@ -10,8 +10,10 @@ using System.Windows.Forms;
 
 namespace SnakeGame
 {
+
     public partial class Form1 : Form
     {
+        public Snake firstSnake = new Snake(30, 30, 5, 150, 70);// NOTE!: the speeds should be the same as the dimensions of buttons(You can check them in SnakePiece Constructor)
         public Form1()
         {
             InitializeComponent();
@@ -19,11 +21,52 @@ namespace SnakeGame
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Snake firstSnake = new Snake(30, 30, 6, 150, 70);
+            
             foreach (var piece in SnakePiece.snakePieces)
             {
                 Controls.Add(piece);
             }
+
+        }
+
+        private void upBtn_Click(object sender, EventArgs e)
+        {
+            firstSnake.MoveUp();
+            //setting restrictions
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                {
+                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    {
+                        MessageBox.Show("LOSER!!!");
+                        this.Hide();
+                    }
+                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    {
+                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        {
+                            MessageBox.Show("LOSER!!!");
+                            this.Hide();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void downBtn_Click(object sender, EventArgs e)
+        {
+            firstSnake.MoveDown();
+        }
+
+        private void leftBtn_Click(object sender, EventArgs e)
+        {
+            firstSnake.MoveLeft();
+        }
+
+        private void rightBtn_Click(object sender, EventArgs e)
+        {
+            firstSnake.MoveRight();
         }
     }
     public class Snake
@@ -45,17 +88,117 @@ namespace SnakeGame
             int tempX = HeadX;
             for (int i = 1; i < PiecesCount; i++)
             {
-                tempX -= 30;
+                tempX -= HorSpeed;
                 new SnakePiece(tempX, HeadY, false);
             }
-    }
+        }
+        public void MoveDown()
+        {
+            //saving the previous coordinates
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                XY_Coordinate myCoor = new XY_Coordinate();
+                myCoor.X = piece.Left;
+                myCoor.Y = piece.Top;
+                SnakePiece.previousCoordinates.Add(myCoor);
+            }
+            //moving the head of the snake downwards by 30
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)
+                {
+                    piece.Top += VerSpeed;
+                }
+            }
+            for (int i = 1; i < SnakePiece.snakePieces.Count; i++)
+            {
+                SnakePiece.snakePieces[i].Left = SnakePiece.previousCoordinates[i - 1].X;
+                SnakePiece.snakePieces[i].Top = SnakePiece.previousCoordinates[i - 1].Y;
+            }
+            SnakePiece.previousCoordinates.Clear();
+        }
+        public void MoveUp()
+        {
+            //saving the previous coordinates
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                XY_Coordinate myCoor = new XY_Coordinate();
+                myCoor.X = piece.Left;
+                myCoor.Y = piece.Top;
+                SnakePiece.previousCoordinates.Add(myCoor);
+            }
+            //moving the head of the snake downwards by 30
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)
+                {
+                    piece.Top -= VerSpeed;
+                }
+            }
+            for (int i = 1; i < SnakePiece.snakePieces.Count; i++)
+            {
+                SnakePiece.snakePieces[i].Left = SnakePiece.previousCoordinates[i - 1].X;
+                SnakePiece.snakePieces[i].Top = SnakePiece.previousCoordinates[i - 1].Y;
+            }
+            SnakePiece.previousCoordinates.Clear();
+        }
+        public void MoveRight()
+        {
+            //saving the previous coordinates
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                XY_Coordinate myCoor = new XY_Coordinate();
+                myCoor.X = piece.Left;
+                myCoor.Y = piece.Top;
+                SnakePiece.previousCoordinates.Add(myCoor);
+            }
+            //moving the head of the snake downwards by 30
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)
+                {
+                    piece.Left += HorSpeed;
+                }
+            }
+            for (int i = 1; i < SnakePiece.snakePieces.Count; i++)
+            {
+                SnakePiece.snakePieces[i].Left = SnakePiece.previousCoordinates[i - 1].X;
+                SnakePiece.snakePieces[i].Top = SnakePiece.previousCoordinates[i - 1].Y;
+            }
+            SnakePiece.previousCoordinates.Clear();
+        }
+        public void MoveLeft()
+        {
+            //saving the previous coordinates
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                XY_Coordinate myCoor = new XY_Coordinate();
+                myCoor.X = piece.Left;
+                myCoor.Y = piece.Top;
+                SnakePiece.previousCoordinates.Add(myCoor);
+            }
+            //moving the head of the snake downwards by 30
+            foreach (var piece in SnakePiece.snakePieces)
+            {
+                if (piece.BackColor == Color.BlueViolet)
+                {
+                    piece.Left -= HorSpeed;
+                }
+            }
+            for (int i = 1; i < SnakePiece.snakePieces.Count; i++)
+            {
+                SnakePiece.snakePieces[i].Left = SnakePiece.previousCoordinates[i - 1].X;
+                SnakePiece.snakePieces[i].Top = SnakePiece.previousCoordinates[i - 1].Y;
+            }
+            SnakePiece.previousCoordinates.Clear();
+        }
 
     }
     public class SnakePiece
     {
         public static List<Button> snakePieces = new List<Button>();
         // to store the coordinates of previous location to make the snake bend
-        public static List<SnakePiece> previousCoordinates = new List<SnakePiece>();
+        public static List<XY_Coordinate> previousCoordinates = new List<XY_Coordinate>();
         public int LocX { get; set; }
         public int LocY { get; set; }
         public bool isHead { get; set;}
@@ -72,5 +215,10 @@ namespace SnakeGame
             snakePieces.Add(newPiece);
 
         }
+    }
+    public class XY_Coordinate
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }
