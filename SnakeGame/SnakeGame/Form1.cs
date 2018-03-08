@@ -13,13 +13,47 @@ namespace SnakeGame
 
     public partial class Form1 : Form
     {
-        public Snake firstSnake = new Snake(30, 30, 5, 150, 70);// NOTE!: the speeds should be the same as the dimensions of buttons(You can check them in SnakePiece Constructor)
+        //**************************
+        //INITIAL SNAKE
+        //**************************
+        public Snake firstSnake = new Snake(30, 30, 9, 300, 90);// NOTE!: the speeds should be the same as the dimensions of buttons(You can check them in SnakePiece Constructor)
         public Form1()
         {
             InitializeComponent();
 
         }
+        //****************************
+        //ADDITIONAL METHODS
+        //****************************
+        public void createApple()
+        {
+            Random rnd = new Random();
+            int xRan = rnd.Next(3, (this.Width - 90) / 30);
+            int yRan = rnd.Next(3, (this.Height - 90) / 30);
+            Apple snakeFood = new Apple(xRan * 30, yRan * 30);
+            Button appleBtn = new Button();
+            appleBtn.Left = snakeFood.X;
+            appleBtn.Top = snakeFood.Y;
+            appleBtn.Width = 30;
+            appleBtn.Height = 30;
+            appleBtn.FlatStyle = FlatStyle.Flat;
+            appleBtn.BackColor = Color.Red;
+            Controls.Add(appleBtn);
+        }
+        public void addPiece()
+        {
+            //MessageBox.Show(""+ (SnakePiece.snakePieces.Count - 1));
+            int previousX = SnakePiece.snakePieces[SnakePiece.snakePieces.Count - 1].Left - 30;
+            int previousY = SnakePiece.snakePieces[SnakePiece.snakePieces.Count - 1].Top;
+            var additionalPiece = new SnakePiece(previousX, previousY,false);
 
+            Controls.Add(SnakePiece.snakePieces[SnakePiece.snakePieces.Count - 1]);
+            //SnakePiece.snakePieces.Add(newPiece);
+            //Controls.Add(SnakePiece.snakePieces[SnakePiece.snakePieces.Count - 1]);
+        }
+        //*************************
+        //LOADING FORM
+        //*************************
         private void Form1_Load(object sender, EventArgs e)
         {
             
@@ -27,28 +61,49 @@ namespace SnakeGame
             {
                 Controls.Add(piece);
             }
-
+            createApple();
         }
-
+        //****************************
+        // setting the button actions
+        //****************************
         private void upBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveUp();
             //setting restrictions
-            foreach (var piece in SnakePiece.snakePieces)
+            for(int p = 0; p < SnakePiece.snakePieces.Count; p++)
             {
-                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                if (SnakePiece.snakePieces[p].BackColor == Color.BlueViolet)// if the piece is head
                 {
-                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    if (SnakePiece.snakePieces[p].Left >= this.Width-90 || SnakePiece.snakePieces[p].Left <= 0 || SnakePiece.snakePieces[p].Top <= 0 || SnakePiece.snakePieces[p].Top >= this.Height-90)
                     {
                         MessageBox.Show("LOSER!!!");
-                        this.Hide();
+                        //this.Hide();
                     }
-                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    for (int j = 0; j < SnakePiece.snakePieces.Count; j++)// eating itself
                     {
-                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        if (SnakePiece.snakePieces[j].BackColor != SnakePiece.snakePieces[p].BackColor && SnakePiece.snakePieces[j].Left == SnakePiece.snakePieces[p].Left && SnakePiece.snakePieces[j].Top == SnakePiece.snakePieces[p].Top)
                         {
                             MessageBox.Show("LOSER!!!");
-                            this.Hide();
+                            //this.Hide();
+                        }
+                    }
+                }
+            }
+            //eating apple
+            foreach (Button item in Controls)
+            {
+                if(item.BackColor == Color.Red)// finding the apple
+                {
+                    for (int bp = 0; bp < SnakePiece.snakePieces.Count; bp++)//finding the head
+                    {
+                        if(SnakePiece.snakePieces[bp].BackColor == Color.BlueViolet)//finding the head
+                        {
+                            if(SnakePiece.snakePieces[bp].Left == item.Left && SnakePiece.snakePieces[bp].Top == item.Top)//checking if apple is eaten
+                            {
+                                Controls.Remove(item);
+                                createApple();
+                                addPiece();
+                            }
                         }
                     }
                 }
@@ -58,21 +113,41 @@ namespace SnakeGame
         private void downBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveDown();
-            foreach (var piece in SnakePiece.snakePieces)
+            //setting restrictions
+            for (int p = 0; p < SnakePiece.snakePieces.Count; p++)
             {
-                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                if (SnakePiece.snakePieces[p].BackColor == Color.BlueViolet)// if the piece is head
                 {
-                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    if (SnakePiece.snakePieces[p].Left >= this.Width - 90 || SnakePiece.snakePieces[p].Left <= 0 || SnakePiece.snakePieces[p].Top <= 0 || SnakePiece.snakePieces[p].Top >= this.Height - 90)
                     {
                         MessageBox.Show("LOSER!!!");
-                        this.Hide();
+                        //this.Hide();
                     }
-                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    for (int j = 0; j < SnakePiece.snakePieces.Count; j++)
                     {
-                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        if (SnakePiece.snakePieces[j].BackColor != SnakePiece.snakePieces[p].BackColor && SnakePiece.snakePieces[j].Left == SnakePiece.snakePieces[p].Left && SnakePiece.snakePieces[j].Top == SnakePiece.snakePieces[p].Top)
                         {
                             MessageBox.Show("LOSER!!!");
-                            this.Hide();
+                            //this.Hide();
+                        }
+                    }
+                }
+            }
+            //eating apple
+            foreach (Button item in Controls)
+            {
+                if (item.BackColor == Color.Red)// finding the apple
+                {
+                    for (int bp = 0; bp < SnakePiece.snakePieces.Count; bp++)//finding the head
+                    {
+                        if (SnakePiece.snakePieces[bp].BackColor == Color.BlueViolet)//finding the head
+                        {
+                            if (SnakePiece.snakePieces[bp].Left == item.Left && SnakePiece.snakePieces[bp].Top == item.Top)//checking if apple is eaten
+                            {
+                                Controls.Remove(item);
+                                createApple();
+                                addPiece();
+                            }
                         }
                     }
                 }
@@ -82,45 +157,86 @@ namespace SnakeGame
         private void leftBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveLeft();
-            foreach (var piece in SnakePiece.snakePieces)
+            //setting restrictions
+            for (int p = 0; p < SnakePiece.snakePieces.Count; p++)
             {
-                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                if (SnakePiece.snakePieces[p].BackColor == Color.BlueViolet)// if the piece is head
                 {
-                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    if (SnakePiece.snakePieces[p].Left >= this.Width - 90 || SnakePiece.snakePieces[p].Left <= 0 || SnakePiece.snakePieces[p].Top <= 0 || SnakePiece.snakePieces[p].Top >= this.Height - 90)
                     {
                         MessageBox.Show("LOSER!!!");
-                        this.Hide();
+                        //this.Hide();
                     }
-                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    for (int j = 0; j < SnakePiece.snakePieces.Count; j++)
                     {
-                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        if (SnakePiece.snakePieces[j].BackColor != SnakePiece.snakePieces[p].BackColor && SnakePiece.snakePieces[j].Left == SnakePiece.snakePieces[p].Left && SnakePiece.snakePieces[j].Top == SnakePiece.snakePieces[p].Top)
                         {
                             MessageBox.Show("LOSER!!!");
-                            this.Hide();
+                            //this.Hide();
                         }
                     }
                 }
             }
+            //eating apple
+            foreach (Button item in Controls)
+            {
+                if (item.BackColor == Color.Red)// finding the apple
+                {
+                    for (int bp = 0; bp < SnakePiece.snakePieces.Count; bp++)//finding the head
+                    {
+                        if (SnakePiece.snakePieces[bp].BackColor == Color.BlueViolet)//finding the head
+                        {
+                            if (SnakePiece.snakePieces[bp].Left == item.Left && SnakePiece.snakePieces[bp].Top == item.Top)//checking if apple is eaten
+                            {
+                                Controls.Remove(item);
+                                createApple();
+                                addPiece();
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         private void rightBtn_Click(object sender, EventArgs e)
         {
             firstSnake.MoveRight();
-            foreach (var piece in SnakePiece.snakePieces)
+            //setting restrictions
+            for (int p = 0; p < SnakePiece.snakePieces.Count; p++)
             {
-                if (piece.BackColor == Color.BlueViolet)// if the piece is head
+                if (SnakePiece.snakePieces[p].BackColor == Color.BlueViolet)// if the piece is head
                 {
-                    if (piece.Left >= this.Width || piece.Left <= 0 || piece.Top <= 0 || piece.Top >= this.Height)
+                    if (SnakePiece.snakePieces[p].Left >= this.Width - 90 || SnakePiece.snakePieces[p].Left <= 0 || SnakePiece.snakePieces[p].Top <= 0 || SnakePiece.snakePieces[p].Top >= this.Height - 90)
                     {
                         MessageBox.Show("LOSER!!!");
-                        this.Hide();
+                        //this.Hide();
                     }
-                    foreach (var bodyPiece in SnakePiece.snakePieces)
+                    for (int j = 0; j < SnakePiece.snakePieces.Count; j++)
                     {
-                        if (bodyPiece.BackColor != piece.BackColor && bodyPiece.Left == piece.Left && bodyPiece.Top == piece.Top)
+                        if (SnakePiece.snakePieces[j].BackColor != SnakePiece.snakePieces[p].BackColor && SnakePiece.snakePieces[j].Left == SnakePiece.snakePieces[p].Left && SnakePiece.snakePieces[j].Top == SnakePiece.snakePieces[p].Top)
                         {
                             MessageBox.Show("LOSER!!!");
-                            this.Hide();
+                            //this.Hide();
+                        }
+                    }
+                }
+            }
+            //eating apple
+            foreach (Button item in Controls)
+            {
+                if (item.BackColor == Color.Red)// finding the apple
+                {
+                    for (int bp = 0; bp < SnakePiece.snakePieces.Count; bp++)//finding the head
+                    {
+                        if (SnakePiece.snakePieces[bp].BackColor == Color.BlueViolet)//finding the head
+                        {
+                            if (SnakePiece.snakePieces[bp].Left == item.Left && SnakePiece.snakePieces[bp].Top == item.Top)//checking if apple is eaten
+                            {
+                                Controls.Remove(item);
+                                createApple();
+                                addPiece();
+                            }
                         }
                     }
                 }
@@ -264,12 +380,14 @@ namespace SnakeGame
         {
             this.LocX = _x;
             this.LocY = _y;
+            //CREATING A UTTON WITH SIMILAR PROPERTIES TO THE SNAKEPIECE OBJECT
             var newPiece = new Button { Left = this.LocX, Top = this.LocY, BackColor = Color.Aquamarine, FlatStyle = FlatStyle.Flat, Width = 30, Height = 30 };
             
             if (_isHead == true)
             {
                 newPiece.BackColor = Color.BlueViolet;
             }
+            //ADDING THE NEW BUTTON TO THE LIST
             snakePieces.Add(newPiece);
 
         }
@@ -278,5 +396,15 @@ namespace SnakeGame
     {
         public int X { get; set; }
         public int Y { get; set; }
+    }
+    public class Apple
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public Apple(int _x, int _y)
+        {
+            this.X = _x;
+            this.Y = _y;
+        }
     }
 }
